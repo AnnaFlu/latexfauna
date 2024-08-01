@@ -1,0 +1,10 @@
+{
+  "layers": [
+    {
+      "type": "solid",
+      "color": "#FF0000",
+      "opacity": 1,
+      "visible": true
+    }
+  ]
+}
