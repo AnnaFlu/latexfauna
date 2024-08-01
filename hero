@@ -1,0 +1,106 @@
+{
+  "history": [
+    {
+      "visible": true,
+      "aspectRatio": 1,
+      "layerType": "effect",
+      "type": "gradient",
+      "speed": 0.25,
+      "trackMouse": 0,
+      "mouseMomentum": 0,
+      "animating": false,
+      "isMask": 0,
+      "compiledFragmentShaders": [
+        "#version 300 es\nprecision mediump float;\nin vec2 vTextureCoord;\nconst vec3 uColors[1] = vec3[]( vec3(1.000000, 0.925490, 0.843137) );\nuniform vec2 uMousePos;\nuniform vec2 uResolution;\nvec2 rotate(vec2 coord, float angle) {\n  float s = sin(angle);\n  float c = cos(angle);\n  return vec2( coord.x * c - coord.y * s, coord.x * s + coord.y * c );\n}\nout vec4 fragColor;\nvec3 getColor(vec2 uv) {\n  return uColors[0];\n}\nvoid main() {\n  vec2 uv = vTextureCoord;\n  vec2 res = uResolution;\n  vec2 pos = vec2(0.5, 0.5) + mix(vec2(0), (uMousePos-0.5), 0.00);\n  uv -= pos;\n  uv /= (0.50*2.);\n  uv = rotate(uv, (0.00 - 0.5) * 2. * 3.14159265);\n  vec4 color = vec4(getColor(uv), 1);\n  fragColor = color;\n}"
+      ],
+      "compiledVertexShaders": [
+        "#version 300 es\nprecision mediump float;\nin vec3 aVertexPosition;\nin vec2 aTextureCoord;\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\nuniform mat4 uTextureMatrix;\nout vec2 vTextureCoord;\nout vec3 vVertexPosition;\nvoid main() {\n  gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);\n  vTextureCoord = aTextureCoord;\n}"
+      ],
+      "data": {
+        "depth": false
+      }
+    },
+    {
+      "local": {
+        "id": "12e00eb1-a720-4ee4-a564-4d709b152051",
+        "canvas": {},
+        "ctx": {}
+      },
+      "visible": true,
+      "locked": false,
+      "aspectRatio": 1,
+      "layerName": "",
+      "isElement": true,
+      "opacity": 1,
+      "displace": 0,
+      "trackMouse": 0,
+      "mouseMomentum": 0,
+      "blendMode": "NORMAL",
+      "bgDisplace": 0,
+      "mask": 0,
+      "maskBackground": {
+        "type": "Vec3",
+        "_x": 0,
+        "_y": 0,
+        "_z": 0
+      },
+      "maskAlpha": 0,
+      "dispersion": 0,
+      "axisTilt": 0,
+      "layerType": "image",
+      "imageLoaded": false,
+      "effects": [],
+      "size": 0.646,
+      "rotation": 0,
+      "height": 587,
+      "repeat": 0,
+      "fitToCanvas": false,
+      "scaleX": 1,
+      "scaleY": 1,
+      "src": "https://assets.unicorn.studio/images/FQiEpNPw1FMGKNFuWyGW0EJXDV63/Group0.png",
+      "speed": 0.5,
+      "thumb": "https://assets.unicorn.studio/images/FQiEpNPw1FMGKNFuWyGW0EJXDV63/Group0_@thumbnail.png?authuser=0",
+      "translateX": 0,
+      "translateY": 0,
+      "width": 3020,
+      "compiledFragmentShaders": [
+        "#version 300 es\nprecision mediump float;\nin vec2 vTextureCoord;\nin vec3 vVertexPosition;\nuniform sampler2D uBgTexture;\nuniform sampler2D uTexture;\nuniform vec2 uMousePos;\nuniform int uSampleBg;\nout vec4 fragColor;\nvoid main() {\n  vec2 uv = vTextureCoord;\n  vec2 pos = mix(vec2(0), (uMousePos - 0.5), 0.00);\n  uv = uv - pos;\n  vec4 color = texture(uTexture, uv);\n  vec4 background = vec4(0);\n  if (uSampleBg == 1) {\n    background = texture(uBgTexture, vTextureCoord);\n  }\n  color = mix(background, color/(color.a + 0.00000001), color.a * 1.00);\n  fragColor = color;\n}"
+      ],
+      "compiledVertexShaders": [
+        "#version 300 es\nprecision mediump float;\nin vec3 aVertexPosition;\nin vec2 aTextureCoord;\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\nuniform mat4 uTextureMatrix;\nuniform vec2 uMousePos;\nout vec2 vTextureCoord;\nout vec3 vVertexPosition;\nvoid main() {\n  float angleX = uMousePos.y * 0.5 - 0.25;\n  float angleY = (1.-uMousePos.x) * 0.5 - 0.25;\n  mat4 rotateX = mat4(1.0, 0.0, 0.0, 0.0, 0.0, cos(angleX), -sin(angleX), 0.0, 0.0, sin(angleX), cos(angleX), 0.0, 0.0, 0.0, 0.0, 1.0);\n  mat4 rotateY = mat4(cos(angleY), 0.0, sin(angleY), 0.0, 0.0, 1.0, 0.0, 0.0, -sin(angleY), 0.0, cos(angleY), 0.0, 0.0, 0.0, 0.0, 1.0);\n  mat4 rotationMatrix = rotateX * rotateY;\n  gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);\n  vVertexPosition = (rotationMatrix * vec4(aVertexPosition, 1.0)).xyz;\n  vTextureCoord = (uTextureMatrix * vec4(aTextureCoord, 0.0, 1.0)).xy;\n}"
+      ]
+    },
+    {
+      "visible": true,
+      "aspectRatio": 1,
+      "layerType": "effect",
+      "type": "mouse",
+      "animating": true,
+      "mouseMomentum": 0,
+      "isMask": 0,
+      "compiledFragmentShaders": [
+        "#version 300 es\nprecision mediump float;\nin vec2 vTextureCoord;\nin vec3 vVertexPosition;\nuniform sampler2D uTexture;\nuniform sampler2D uPingPongTexture;\nuniform vec2 uResolution;\nconst float PI = 3.1415926;\nconst float ITERATIONS = 24.0;\nconst float kernel[24] = float[]( 0.7978845608028654, 0.795118932516684, 0.7868794322038799, 0.7733362336056986, 0.7547664553859864, 0.7315447328280048, 0.704130653528599, 0.6730536454899063, 0.6388960110447045, 0.6022748643096089, 0.5638237508206051, 0.5241747061566029, 0.48394144903828673, 0.443704309411472, 0.40399737110811773, 0.36529817077804383, 0.3280201493519873, 0.29250790855907144, 0.2590351913317835, 0.2278053882403838, 0.19895427758549736, 0.17255463765302306, 0.1486223271179862, 0.12712341303392466 );\nout vec4 fragColor;\nvec3 rgb2hsv(vec3 c) {\n  vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\n  vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));\n  vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(c.b, c.g));\n  float d = q.x - min(q.w, q.y);\n  float e = 1.0e-10;\n  return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);\n}\nvec3 chromatic_aberration(vec3 color, vec2 uv, vec2 offset) {\n  vec4 left = texture(uTexture, uv - offset);\n  vec4 right = texture(uTexture, uv + offset);\n  color.r = left.r * 0.5 + 0.843 * 0.5;\n  color.g = left.g * 0.5 + 0.4 * 0.5;\n  color.b = right.b * 0.5 + 0.835 * 0.5;\n  return color;\n}\nvec2 angleToDir(float angle) {\n  float rad = angle * 2.0 * PI;\n  return vec2(cos(rad), sin(rad));\n}\nvec4 defaultTrail(vec2 uv, vec2 mouseDir) {\n  vec4 color = vec4(0);\n  vec2 distorted = mouseDir * 0.4;\n  color = texture(uTexture, uv - distorted);\n  color.rgb = chromatic_aberration(color.rgb, uv - distorted, distorted * 0.62 * 0.12);\n  return color;\n}\nvec4 getTrailColor(vec2 uv, vec2 mouseDir, float strength) {\n  vec4 color = vec4(0);\n  float aspectRatio = uResolution.x / uResolution.y;\n  return defaultTrail(uv, mouseDir);\n}\nvoid main() {\n  vec2 uv = vTextureCoord;\n  vec2 pingpongUv = uv;\n  vec3 mouseRgb = texture(uPingPongTexture, pingpongUv).rgb;\n  vec3 mouseTrail = rgb2hsv(mouseRgb);\n  float angle = mouseTrail.x;\n  float strength = mouseTrail.z * (0.30 * 2.0);\n  vec2 direction = angleToDir(angle);\n  vec2 mouseDir = direction * strength;\n  vec4 color = getTrailColor(uv, mouseDir, strength);\n  fragColor = color;\n}",
+        "#version 300 es\nprecision lowp float;\nin vec3 vVertexPosition;\nin vec2 vTextureCoord;\nuniform sampler2D uPingPongTexture;\nuniform vec2 uMousePos;\nuniform vec2 uPreviousMousePos;\nuniform vec2 uResolution;\nconst float PI = 3.1415926;\nconst float TWOPI = 6.2831852;\nout vec4 fragColor;\nvec3 hsv2rgb(vec3 c) {\n  vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n  vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n  return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n}\nvoid main() {\n  float aspectRatio = uResolution.x / uResolution.y;\n  vec2 uv = vTextureCoord;\n  vec2 correctedUv = uv * vec2(aspectRatio, 1.0);\n  vec2 dir = (uMousePos - uPreviousMousePos) * vec2(aspectRatio, 1.0);\n  float dist = length(dir);\n  dir = normalize(dir);\n  float rad = 0.30 * 0.4 * mix(aspectRatio, 1.0, 0.5);\n  float angle = atan(dir.y, dir.x);\n  if (angle < 0.0) angle += TWOPI;\n  float t = clamp(dot(correctedUv - uPreviousMousePos * vec2(aspectRatio, 1.0), dir) / dist, 0.0, 1.0);\n  vec2 closestPoint = mix(uPreviousMousePos, uMousePos, t) * vec2(aspectRatio, 1.0);\n  float distanceToLine = distance(correctedUv, closestPoint);\n  float s = smoothstep(rad, rad * 0.00, distanceToLine);\n  vec3 color = vec3(angle / TWOPI, 1.0, 1.0);\n  vec3 mouseColor = hsv2rgb(color);\n  vec3 lastFrameColor = texture(uPingPongTexture, mix(uv, uv / 1.03 + 0.015, 0.20)).rgb;\n  vec3 draw = mix(lastFrameColor, mouseColor, min(1.0, dist * s));\n  fragColor = vec4(draw * pow(0.50, 0.1), 1.0);\n}"
+      ],
+      "compiledVertexShaders": [
+        "#version 300 es\nprecision mediump float;\nin vec3 aVertexPosition;\nin vec2 aTextureCoord;\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\nout vec2 vTextureCoord;\nvec3 rgb2hsv(vec3 c) {\n  vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\n  vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));\n  vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));\n  float d = q.x - min(q.w, q.y);\n  float e = 1.0e-10;\n  return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);\n}\nconst float PI = 3.1415926;\nvoid main() {\n  vec3 vertexPosition = aVertexPosition;\n  gl_Position = uPMatrix * uMVMatrix * vec4(vertexPosition, 1.0);\n  vTextureCoord = aTextureCoord;\n}",
+        "#version 300 es\nprecision lowp float;\nin vec3 aVertexPosition;\nin vec2 aTextureCoord;\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\nout vec3 vVertexPosition;\nout vec2 vTextureCoord;\nvoid main() {\n  vec3 vertexPosition = aVertexPosition;\n  gl_Position = uPMatrix * uMVMatrix * vec4(vertexPosition, 1.0);\n  vTextureCoord = aTextureCoord;\n  vVertexPosition = vertexPosition;\n}"
+      ],
+      "data": {
+        "depth": false
+      }
+    }
+  ],
+  "options": {
+    "name": "Untitled project",
+    "fps": 60,
+    "dpi": 2,
+    "scale": 1,
+    "includeLogo": true,
+    "isProduction": false,
+    "freePlan": true,
+    "version": "1.2.7"
+  },
+  "version": "1.2.7"
+}
+
