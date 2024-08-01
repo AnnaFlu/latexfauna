@@ -79,32 +79,7 @@
       "mouseMomentum": 0,
       "isMask": 0,
       "compiledFragmentShaders": [
-        "#version 300 es\nprecision mediump float;\nin vec2 vTextureCoord;\nin vec3 vVertexPosition;\nuniform sampler2D uTexture;\nuniform sampler2D uPingPongTexture;\nuniform vec2 uResolution;\nconst float PI = 3.1415926;\nconst float ITERATIONS = 24.0;\nconst float kernel[24] = float[]( 0.7978845608028654, 0.795118932516684, 0.7868794322038799, 0.7733362336056986, 0.7547664553859864, 0.7315447328280048, 0.704130653528599, 0.6730536454899063, 0.6388960110447045, 0.6022748643096089, 0.5638237508206051, 0.5241747061566029, 0.48394144903828673, 0.443704309411472, 0.40399737110811773, 0.36529817077804383, 0.3280201493519873, 0.29250790855907144, 0.2590351913317835, 0.2278053882403838, 0.19895427758549736, 0.17255463765302306, 0.1486223271179862, 0.12712341303392466 );\nout vec4 fragColor;\nvec3 rgb2hsv(vec3 c) {\n  vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\n  vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));\n  vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));\n  float d = q.x - min(q.w, q.y);\n  float e = 1.0e-10;\n  return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);\n}\nvec3 vec3 vec3 chromatic_aberration(vec3 color, vec2 uv, vec2 offset) {
-  vec4 left = texture(uTexture, uv - offset);
-  vec4 right = texture(uTexture, uv + offset);
-  color.r = mix(left.r, 0.84, 0.5); // Blend with red
-  color.g = mix(left.g, 0.36, 0.5); // Blend with green
-  color.b = mix(right.b, 0.835, 0.5); // Blend with blue
-  return color;
-\n}\nvec2 angleToDir(float angle) {\n  float rad = angle * 2.0 * PI;\n  return vec2(cos(rad), sin(rad));\n}\nvec4 defaultTrail(vec2 uv, vec2 mouseDir) {
-  vec4 color = vec4(0);
-  vec2 distorted = mouseDir * 0.4;
-  color = texture(uTexture, uv - distorted);
-  color.rgb = chromatic_aberration(color.rgb, uv - distorted, distorted * 0.62 * 0.12);
-  return color;\n}\nvec4 getTrailColor(vec2 uv, vec2 mouseDir, float strength) {
-  vec4 color = vec4(0);
-  return defaultTrail(uv, mouseDir);\n}\nvoid main() {
-  vec2 uv = vTextureCoord;
-  vec2 pingpongUv = uv;
-  vec3 mouseRgb = texture(uPingPongTexture, pingpongUv).rgb;
-  vec3 mouseTrail = rgb2hsv(mouseRgb);
-  float angle = mouseTrail.x;
-  float strength = mouseTrail.z * (0.30 * 2.0);
-  vec2 direction = angleToDir(angle);
-  vec2 mouseDir = direction * strength;
-  vec4 color = getTrailColor(uv, mouseDir, strength);
-  fragColor = color;
-\n}",
+        "#version 300 es\nprecision mediump float;\nin vec2 vTextureCoord;\nin vec3 vVertexPosition;\nuniform sampler2D uTexture;\nuniform sampler2D uPingPongTexture;\nuniform vec2 uResolution;\nconst float PI = 3.1415926;\nconst float ITERATIONS = 24.0;\nconst float kernel[24] = float[]( 0.7978845608028654, 0.795118932516684, 0.7868794322038799, 0.7733362336056986, 0.7547664553859864, 0.7315447328280048, 0.704130653528599, 0.6730536454899063, 0.6388960110447045, 0.6022748643096089, 0.5638237508206051, 0.5241747061566029, 0.48394144903828673, 0.443704309411472, 0.40399737110811773, 0.36529817077804383, 0.3280201493519873, 0.29250790855907144, 0.2590351913317835, 0.2278053882403838, 0.19895427758549736, 0.17255463765302306, 0.1486223271179862, 0.12712341303392466 );\nout vec4 fragColor;\nvec3 rgb2hsv(vec3 c) {\n  vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\n  vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));\n  vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));\n  float d = q.x - min(q.w, q.y);\n  float e = 1.0e-10;\n  return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);\n}\nvec3 chromatic_aberration(vec3 color, vec2 uv, vec2 offset) {\n  vec4 left = texture(uTexture, uv - offset);\n  vec4 right = texture(uTexture, uv + offset);\n  color.r = mix(left.r, 0.84, 0.5); // Blend with red\n  color.g = mix(left.g, 0.36, 0.5); // Blend with green\n  color.b = mix(right.b, 0.835, 0.5); // Blend with blue\n  return color;\n}\nvec2 angleToDir(float angle) {\n  float rad = angle * 2.0 * PI;\n  return vec2(cos(rad), sin(rad));\n}\nvec4 defaultTrail(vec2 uv, vec2 mouseDir) {\n  vec4 color = vec4(0);\n  vec2 distorted = mouseDir * 0.4;\n  color = texture(uTexture, uv - distorted);\n  color.rgb = chromatic_aberration(color.rgb, uv - distorted, distorted * 0.62 * 0.12);\n  return color;\n}\nvec4 getTrailColor(vec2 uv, vec2 mouseDir, float strength) {\n  vec4 color = vec4(0);\n  return defaultTrail(uv, mouseDir);\n}\nvoid main() {\n  vec2 uv = vTextureCoord;\n  vec2 pingpongUv = uv;\n  vec3 mouseRgb = texture(uPingPongTexture, pingpongUv).rgb;\n  vec3 mouseTrail = rgb2hsv(mouseRgb);\n  float angle = mouseTrail.x;\n  float strength = mouseTrail.z * (0.30 * 2.0);\n  vec2 direction = angleToDir(angle);\n  vec2 mouseDir = direction * strength;\n  vec4 color = getTrailColor(uv, mouseDir, strength);\n  fragColor = color;\n}",
         "#version 300 es\nprecision lowp float;\nin vec3 vVertexPosition;\nin vec2 vTextureCoord;\nuniform sampler2D uPingPongTexture;\nuniform vec2 uMousePos;\nuniform vec2 uPreviousMousePos;\nuniform vec2 uResolution;\nconst float PI = 3.1415926;\nconst float TWOPI = 6.2831852;\nout vec4 fragColor;\nvec3 hsv2rgb(vec3 c) {\n  vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n  vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n  return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n}\nvoid main() {\n  float aspectRatio = uResolution.x / uResolution.y;\n  vec2 uv = vTextureCoord;\n  vec2 correctedUv = uv * vec2(aspectRatio, 1.0);\n  vec2 dir = (uMousePos - uPreviousMousePos) * vec2(aspectRatio, 1.0);\n  float dist = length(dir);\n  dir = normalize(dir);\n  float rad = 0.30 * 0.4 * mix(aspectRatio, 1.0, 0.5);\n  float angle = atan(dir.y, dir.x);\n  if (angle < 0.0) angle += TWOPI;\n  float t = clamp(dot(correctedUv - uPreviousMousePos * vec2(aspectRatio, 1.0), dir) / dist, 0.0, 1.0);\n  vec2 closestPoint = mix(uPreviousMousePos, uMousePos, t) * vec2(aspectRatio, 1.0);\n  float distanceToLine = distance(correctedUv, closestPoint);\n  float s = smoothstep(rad, rad * 0.00, distanceToLine);\n  vec3 color = vec3(angle / TWOPI, 1.0, 1.0);\n  vec3 mouseColor = hsv2rgb(color);\n  vec3 lastFrameColor = texture(uPingPongTexture, mix(uv, uv / 1.03 + 0.015, 0.20)).rgb;\n  vec3 draw = mix(lastFrameColor, mouseColor, min(1.0, dist * s));\n  fragColor = vec4(draw * pow(0.50, 0.1), 1.0);\n}"
       ],
       "compiledVertexShaders": [
@@ -128,4 +103,3 @@
   },
   "version": "1.2.7"
 }
-
